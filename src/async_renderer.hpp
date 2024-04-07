@@ -31,6 +31,23 @@ float julia_iter(sf::Vector2<TFloatType> pos)
 }
 
 template<typename TFloatType>
+float mandelbrot_iter(sf::Vector2<TFloatType> pos)
+{
+    uint32_t i{0};
+    TFloatType zr{0.0};
+    TFloatType zi{0.0};
+    TFloatType mod = zr * zr + zi * zi;
+    while (mod < TFloatType{4.0} && i < Config::max_iteration) {
+        const TFloatType tmp = zr;
+        zr = zr * zr - zi * zi + pos.x;
+        zi = TFloatType{2.0} * zi * tmp + pos.y;
+        mod = zr * zr + zi * zi;
+        ++i;
+    }
+    return static_cast<float>(i) - static_cast<float>(log2(std::max(TFloatType(1.0), log2(mod))));
+}
+
+template<typename TFloatType>
 struct RenderState
 {
     VertexArrayGrid         grid;
@@ -124,7 +141,7 @@ struct AsyncRenderer
                         // Monte Carlo color integration
                         for (uint32_t i{Config::samples_count}; i--;) {
                             const sf::Vector2<TFloatType> off        = anti_aliasing_offsets[i] / render_zoom;
-                            const float                   iter       = julia_iter<TFloatType>({xf + off.x, yf + off.y});
+                            const float                   iter       = mandelbrot_iter<TFloatType>({xf + off.x, yf + off.y});
                             const float                   iter_ratio = iter / static_cast<float>(Config::max_iteration);
                             color_vec += palette.getColorVec(iter_ratio);
                         }
