@@ -27,7 +27,7 @@ float julia_iter(sf::Vector2<TFloatType> pos)
         mod = zr * zr + zi * zi;
         ++i;
     }
-    return static_cast<float>(i) - static_cast<float>(log2(std::max(TFloatType(1.0), log2(mod))));
+    return static_cast<float>(i) - static_cast<float>(log2(std::max(TFloatType(1.0), Config::FloatType(log2(mod)))));
 }
 
 template<typename TFloatType>
@@ -44,7 +44,7 @@ float mandelbrot_iter(sf::Vector2<TFloatType> pos)
         mod = zr * zr + zi * zi;
         ++i;
     }
-    return static_cast<float>(i) - static_cast<float>(log2(std::max(TFloatType(1.0), log2(mod))));
+    return static_cast<float>(i) - static_cast<float>(log2(std::max(TFloatType(1.0), Config::FloatType(log2(mod)))));
 }
 
 template<typename TFloatType>
@@ -152,6 +152,8 @@ struct AsyncRenderer
             });
         }
     }
+
+
 
     void render(TFloatType zoom, sf::Vector2<TFloatType> center, sf::RenderTarget& target)
     {
